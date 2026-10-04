@@ -7,3 +7,6 @@ class ToolRegistry:
     
     def has(self, tool_name):
         return tool_name in self._tools
+
+    def get(self, tool_name):
+        return self._tools.get(tool_name)
