@@ -10,3 +10,6 @@ class ToolRegistry:
 
     def get(self, tool_name):
         return self._tools.get(tool_name)
+
+    def get_lists(self):
+        return list(self._tools.keys())
