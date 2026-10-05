@@ -9,6 +9,13 @@ def validate_tool_call(tool, arguments):
                 "error": f"Missing required parameter: {parameter}"
             }
 
+    for argument in arguments:
+        if argument not in properties:
+            return {
+                "success": False,
+                "error": f"Unknown parameter: {argument}"
+            }
+
 
     return {
         "success": True
