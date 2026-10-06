@@ -175,3 +175,39 @@ def test_wrong_argument_type():
     assert result["success"] is False
     assert result["error"] == "Invalid type for parameter: city"
 
+
+def test_handler_error():
+    registry = ToolRegistry()
+
+    def fake_weather(city):
+        raise Exception("Something went wrong.")
+
+    tool = {
+        "name": "get_weather",
+        "description": "Get the current weather for a city",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string"
+                }
+            },
+            "required": ["city"]
+        },
+        "handler": fake_weather
+    }
+
+    registry.register(tool)
+    runtime = AgentRuntime(registry)
+
+    tool_call = {
+        "name": "get_weather",
+        "arguments": {
+            "city": "Tehran"
+        }
+    }
+
+    result = runtime.execute_tool(tool_call)
+
+    assert result["success"] is False
+    assert result["error"] == "Tool Unavailable."
