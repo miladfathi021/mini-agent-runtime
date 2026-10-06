@@ -19,7 +19,15 @@ class AgentRuntime:
         if not validation["success"]:
             return validation
 
-        result = tool["handler"](**arguments)
+        try:
+            result = tool["handler"](**arguments)
+
+        except Exception as e:
+            return {
+                "success": False,
+                "error": "Tool Unavailable."
+            }
+
 
         return {
             "success": True,
