@@ -39,3 +39,20 @@ def test_execute_tool():
 
     assert result["success"] is True
     assert result["result"]["city"] == "Tehran"
+
+def test_unknown_tool():
+    registry = ToolRegistry()
+
+    runtime = AgentRuntime(registry)
+
+    tool_call = {
+        "name": "unknown_tool",
+        "arguments": {
+            "city": "Tehran"
+        }
+    }
+
+    result = runtime.execute_tool(tool_call)
+
+    assert result["success"] is False
+    assert result["error"] == "Tool 'unknown_tool' not found."
