@@ -19,3 +19,9 @@ class AgentRuntime:
         if not validation["success"]:
             return validation
 
+        result = tool["handler"](**arguments)
+
+        return {
+            "success": True,
+            "result": result
+        }
