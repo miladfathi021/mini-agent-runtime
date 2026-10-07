@@ -5,3 +5,7 @@ def build_tool_definition(tool):
         "type": "function",
         "function": new_tool
     }
+
+
+def build_tool_definitions(tools):
+    return [build_tool_definition(tool) for tool in tools]
