@@ -9,3 +9,9 @@ class AgentState:
 
     def increment_current_iteration(self):
         self.current_iteration += 1
+
+    def to_dict(self):
+        return {
+            "messages": self.messages,
+            "current_iteration": self.current_iteration
+        }
