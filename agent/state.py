@@ -15,3 +15,12 @@ class AgentState:
             "messages": self.messages,
             "current_iteration": self.current_iteration
         }
+
+    @classmethod
+    def from_dict(cls, data):
+        state = cls(
+            messages = data["messages"],
+        )
+        state.current_iteration = data["current_iteration"]
+
+        return state
