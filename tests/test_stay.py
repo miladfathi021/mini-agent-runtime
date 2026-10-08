@@ -28,3 +28,25 @@ def test_state_to_dict():
         "role": "assistant",
         "content": "the weather of Tehran is 23"
     }
+
+def test_state_from_dict():
+    state_dict = {
+        "messages": [
+            {
+                "role": "user",
+                "content": "what is the weather of Tehran?"
+            },
+            {
+                "role": "assistant",
+                "content": "the weather of Tehran is 23"
+            }
+        ],
+        "current_iteration": 2
+    }
+
+    state = AgentState.from_dict(state_dict)
+
+    assert state.current_iteration == 2
+    assert state.messages == state_dict["messages"]
+
+    
