@@ -50,3 +50,34 @@ def test_state_from_dict():
     assert state.messages == state_dict["messages"]
 
     
+def test_state_serialization_round_trip():
+    messages = [
+        {
+            "role": "assistant",
+            "name": "get_weather",
+            "arguments": {
+                "city": "Tehran"
+            }
+        },
+        {
+            "role": "tool",
+            "result": {
+                "city": "Tehran",
+                "temp": 23
+            }
+        }
+
+    ]
+
+    state = AgentState(messages)
+    state.increment_current_iteration()
+    state.increment_current_iteration()
+    state.increment_current_iteration()
+
+
+    state_dict = state.to_dict()
+
+    new_state = AgentState.from_dict(state_dict)
+
+    assert state.messages == new_state.messages
+    assert state.current_iteration == new_state.current_iteration
