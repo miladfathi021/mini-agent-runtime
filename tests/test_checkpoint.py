@@ -23,3 +23,21 @@ def test_checkpoint_creates_snapshot(tmp_path):
 
     assert restored_state.current_iteration == 1
     assert state.current_iteration == 2
+
+def test_checkpoint_saves_state_to_file(tmp_path):
+    state = AgentState([
+        {
+            "role": "user",
+            "content": "Hello"
+        }
+    ])
+
+    state.increment_current_iteration()
+    state.increment_current_iteration()
+
+    temp_path = tmp_path / "snapshot.json"
+
+    checkpoint = Checkpoint(temp_path)
+    checkpoint.save(state)
+
+    assert temp_path.is_file()
