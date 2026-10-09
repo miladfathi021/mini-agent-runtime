@@ -94,3 +94,20 @@ def test_checkpoint_load_returns_none_when_file_is_invalid(tmp_path):
     checkpoint_load = checkpoint.load()
 
     assert checkpoint_load is None
+
+def test_checkpoint_preserves_unicode_messages(tmp_path):
+    state = AgentState([
+        {
+            "role": "user",
+            "content": "هوای تهران چند درجه است؟"
+        }
+    ])
+
+    temp_path = tmp_path / "snapshot.json"
+    checkpoint = Checkpoint(temp_path)
+    checkpoint.save(state)
+
+    with open(temp_path, "r", encoding="utf-8") as file:
+        content = file.read()
+
+    assert "هوای تهران چند درجه است؟" in content
