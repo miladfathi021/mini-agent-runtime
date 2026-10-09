@@ -1,9 +1,10 @@
 class AgentLoop:
     max_iterations = 10
 
-    def __init__(self, llm, runtime):
+    def __init__(self, llm, runtime, checkpoint):
         self.llm = llm
         self.runtime = runtime
+        self.checkpoint = checkpoint
 
     def run(self, state):
         while state.current_iteration < self.max_iterations:
@@ -17,6 +18,8 @@ class AgentLoop:
                     "role": "assistant",
                     "content": response["content"]
                 })
+                self.checkpoint.save(state)
+                
                 return response["content"]
 
             if response["type"] == "tool_call" and response["tool_call"]:
@@ -35,6 +38,8 @@ class AgentLoop:
                     "content": runtime_result
                 })
 
+            self.checkpoint.save(state)
+                
         return {
             "success": False,
             "error": "Max iterations exceeded."
