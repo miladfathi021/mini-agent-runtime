@@ -11,3 +11,13 @@ class Checkpoint:
         with open(self.file_path, "w", encoding="utf-8") as file:
             json.dump(state_dict, file, ensure_ascii=False)
 
+    def load(self):
+        try:
+            with open(self.file_path, "r", encoding="utf-8") as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            return None
+        except json.JSONDecodeError:
+            return None
+        
+        return AgentState.from_dict(data)
