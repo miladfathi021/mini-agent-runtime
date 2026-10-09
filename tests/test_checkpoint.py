@@ -41,3 +41,40 @@ def test_checkpoint_saves_state_to_file(tmp_path):
     checkpoint.save(state)
 
     assert temp_path.is_file()
+
+def test_checkpoint_saves_correct_state_to_file(tmp_path):
+    state = AgentState([
+        {
+            "role": "user",
+            "content": "What is the weather of Tehran?"
+        }
+    ])
+
+    state.increment_current_iteration()
+
+    temp_path = tmp_path / "snapshot.json"
+
+    checkpoint = Checkpoint(temp_path)
+    checkpoint.save(state)
+
+    state.increment_current_iteration()
+    state.add_message({
+        "role": "assistant",
+        "tool_call": {
+            "name": "get_weather",
+            "parameters": {
+                "city": "Tehran"
+            }
+        }
+    })
+    
+    with open(temp_path, "r") as file:
+        data = json.load(file)
+
+    assert data["messages"] == [
+        {
+            "role": "user",
+            "content": "What is the weather of Tehran?"
+        }
+    ]
+    assert data["current_iteration"] == 1
