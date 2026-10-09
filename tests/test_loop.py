@@ -71,3 +71,24 @@ def test_final_response(tmp_path):
 
     assert result == "Hello"
 
+
+def test_tool_call(tmp_path):
+    llm = FakeLLM()
+    runtime = FakeRuntime()
+    checkpoint = Checkpoint(tmp_path / "checkpoint.json")
+
+    loop = AgentLoop(llm, runtime, checkpoint)
+
+    messages = [
+        {
+            "role": "user",
+            "content": "Hello"
+        }
+    ]
+
+    state = AgentState(messages)
+
+    result = loop.run(state)
+
+    assert result == "Weather in Tehran is 23 degrees."
+
