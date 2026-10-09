@@ -112,3 +112,53 @@ def test_max_iterations(tmp_path):
     assert result["success"] is False
     assert result["error"] == "Max iterations exceeded."
 
+
+def test_state_contains_full_conversation_history(tmp_path):
+    llm = FakeLLM()
+    runtime = FakeRuntime()
+    checkpoint = Checkpoint(tmp_path / "checkpoint.json")
+
+    loop = AgentLoop(llm, runtime, checkpoint)
+
+    state = AgentState([
+        {
+            "role": "user",
+            "content": "Hello"
+        }
+    ])
+
+    result = loop.run(state)
+
+    assert result == "Weather in Tehran is 23 degrees."
+
+    assert len(state.messages) == 4
+
+    assert state.messages[0] == {
+        "role": "user",
+        "content": "Hello"
+    }
+
+    assert state.messages[1] == {
+        "role": "assistant",
+        "tool_call": {
+            "id": "call_223",
+            "name": "get_weather",
+            "arguments": {
+                "city": "Tehran"
+            }
+        }
+    }
+
+    assert state.messages[2] == {
+        "role": "tool",
+        "tool_call_id": "call_223",
+        "content": {
+            "city": "Tehran",
+            "temp": 23
+        }
+    }
+
+    assert state.messages[3] == {
+        "role": "assistant",
+        "content": "Weather in Tehran is 23 degrees."
+    }
