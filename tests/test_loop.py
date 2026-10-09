@@ -92,3 +92,23 @@ def test_tool_call(tmp_path):
 
     assert result == "Weather in Tehran is 23 degrees."
 
+
+def test_max_iterations(tmp_path):
+    llm = InfiniteToolCallLLM()
+    runtime = FakeRuntime()
+    checkpoint = Checkpoint(tmp_path / "checkpoint.json")
+
+    loop = AgentLoop(llm, runtime, checkpoint)
+
+    messages = [{
+        "role": "user",
+        "content": "Hello"
+    }]
+
+    state = AgentState(messages)
+
+    result = loop.run(state)
+    
+    assert result["success"] is False
+    assert result["error"] == "Max iterations exceeded."
+
