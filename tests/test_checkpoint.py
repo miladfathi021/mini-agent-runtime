@@ -85,3 +85,12 @@ def test_checkpoint_load_returns_none_when_file_does_not_exist(tmp_path):
     checkpoint_load = checkpoint.load()
 
     assert checkpoint_load is None
+
+def test_checkpoint_load_returns_none_when_file_is_invalid(tmp_path):
+    temp_path = tmp_path / "snapshot.json"
+    temp_path.write_text('Invalid')
+    checkpoint = Checkpoint(temp_path)
+
+    checkpoint_load = checkpoint.load()
+
+    assert checkpoint_load is None
