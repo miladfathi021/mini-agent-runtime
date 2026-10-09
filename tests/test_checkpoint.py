@@ -78,3 +78,10 @@ def test_checkpoint_saves_correct_state_to_file(tmp_path):
         }
     ]
     assert data["current_iteration"] == 1
+
+def test_checkpoint_load_returns_none_when_file_does_not_exist(tmp_path):
+    temp_path = tmp_path / "snapshot.json"
+    checkpoint = Checkpoint(temp_path)
+    checkpoint_load = checkpoint.load()
+
+    assert checkpoint_load is None
